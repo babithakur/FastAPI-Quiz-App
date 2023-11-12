@@ -35,12 +35,8 @@ def ask_question(num: int):
             correct_alpha = alpha_list[alpha_list_index]
         print(f"{alpha_list[alpha_list_index].upper()}. {option}")
         alpha_list_index+=1
-
     try:
-        answer = input().rstrip().lower()
-        #if answer not in alpha_list:
-         #   print("Invalid input! Please enter correct option (A/B/C/D).")
-          #  answer = input().rstrip().lower()
+        answer = input("Your answer: ").rstrip().lower()
     except KeyboardInterrupt:
         print("\nThanks for playing! See you :)")
         exit()
