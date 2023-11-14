@@ -1,6 +1,17 @@
 import requests
 import json
 from pyfiglet import Figlet
+from jose import jwt
+
+def get_access_token():
+    auth_url = "http://127.0.0.1:8000/token"
+    data = {
+        "username": "astra",
+        "password": "secret123",
+    }
+    response = requests.post(auth_url, data=data)
+    token_data = response.json()
+    return token_data["access_token"]
 
 def check_valid_input(chars: list[str], user_input: str):
     if user_input not in chars:
@@ -20,17 +31,20 @@ def ask_question(num: int):
         print(f"Thanks for playing! Here's your final score: {score}")
         exit()
     try:
-        question_req = requests.get(f"http://127.0.0.1:8000/questions/{num}")
+        access_token = get_access_token()
+        question_req = f"http://127.0.0.1:8000/questions/{num}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        response = requests.get(question_req, headers=headers)
     except:
         print("Sorry! An error occured :(")
         exit()
     alpha_list = ["a", "b", "c", "d"]
     alpha_list_index = 0
     correct_alpha = alpha_list[alpha_list_index]
-    correct_answer = question_req.json()['answer']
+    correct_answer = response.json()['answer']
 
-    print(f"{num}. {question_req.json()['question']}")
-    for option in question_req.json()['options']:
+    print(f"{num}. {response.json()['question']}")
+    for option in response.json()['options']:
         if option == correct_answer:
             correct_alpha = alpha_list[alpha_list_index]
         print(f"{alpha_list[alpha_list_index].upper()}. {option}")
